@@ -1,8 +1,0 @@
-{
-  "name": "fb-image-link-generator",
-  "version": "1.0.0",
-  "description": "Facebook Clickable Image Link Generator",
-  "scripts": {
-    "build": "echo 'Static site - no build needed'"
-  }
-}
