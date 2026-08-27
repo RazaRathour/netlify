@@ -1,0 +1,5 @@
+{
+  "name": "fb-image-link-functions",
+  "version": "1.0.0",
+  "description": "Netlify Functions for Facebook Image Link Generator"
+}
