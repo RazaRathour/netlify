@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- OG tags will be set dynamically by JS, but we have defaults for crawler -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Image Link">
+    <meta property="og:description" content="Click to view image and visit link">
+    <title>Image Link</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 700px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .image-wrapper {
+            position: relative;
+            display: inline-block;
+            max-width: 100%;
+        }
+
+        .clickable-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            display: block;
+        }
+
+        .clickable-image:hover {
+            transform: scale(1.03);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .click-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(99, 102, 241, 0.9);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 16px;
+            font-size: 18px;
+            font-weight: 600;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .image-wrapper:hover .click-indicator {
+            opacity: 1;
+        }
+
+        .message {
+            margin-top: 30px;
+            color: #64748b;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .redirect-btn {
+            margin-top: 20px;
+            padding: 16px 40px;
+            background: linear-gradient(135deg, #6366f1, #ec4899);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .redirect-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 28px rgba(99, 102, 241, 0.4);
+        }
+
+        .error-container {
+            text-align: center;
+            padding: 50px 20px;
+            color: white;
+        }
+
+        .error-container h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .error-container p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            .click-indicator {
+                font-size: 16px;
+                padding: 15px 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="content">
+        <div class="error-container">
+            <div class="loading"></div>
+            <p style="margin-top: 20px;">Loading...</p>
+        </div>
+    </div>
+
+    <script>
+        function showError(title, message) {
+            document.getElementById('content').innerHTML = `
+                <div class="error-container">
+                    <h1>${title}</h1>
+                    <p>${message}</p>
+                </div>
+            `;
+        }
+
+        function showImage(imageUrl, redirectUrl) {
+            document.getElementById('content').innerHTML = `
+                <div class="container">
+                    <div class="image-wrapper">
+                        <img id="mainImage" class="clickable-image" src="${imageUrl}" alt="Click to visit"
+                             onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22300%22><rect fill=%22%23e2e8f0%22 width=%22400%22 height=%22300%22/><text fill=%22%2394a3b8%22 x=%2250%%22 y=%2250%%22 text-anchor=%22middle%22 dy=%22.3em%22 font-size=%2220%22>Image not available</text></svg>'">
+                        <div class="click-indicator">👆 Click karein</div>
+                    </div>
+                    <div class="message">
+                        Image par click karein ya niche button dabayein
+                    </div>
+                    <button class="redirect-btn" id="redirectBtn">🚀 Visit Link</button>
+                </div>
+            `;
+
+            function redirect() {
+                window.location.href = redirectUrl;
+            }
+
+            document.getElementById('mainImage').addEventListener('click', redirect);
+            document.getElementById('redirectBtn').addEventListener('click', redirect);
+        }
+
+        // Parse URL parameters — new format uses "d" param
+        const urlParams = new URLSearchParams(window.location.search);
+        let encodedData = urlParams.get('d');
+
+        // Fallback: support old "data" param for backward compatibility
+        if (!encodedData) {
+            encodedData = urlParams.get('data');
+        }
+
+        if (!encodedData) {
+            showError('❌ No Data Found', 'Link mein data nahi mila. Link sahi hai?');
+        } else {
+            try {
+                const decodedData = JSON.parse(decodeURIComponent(encodedData));
+                
+                // New format: { img: "https://...", url: "https://..." }
+                // Old format: { image: "data:...", redirect: "https://..." }
+                const imageUrl = decodedData.img || decodedData.image;
+                const redirectUrl = decodedData.url || decodedData.redirect;
+
+                if (!imageUrl || !redirectUrl) {
+                    showError('❌ Invalid Data', 'Link data incomplete hai.');
+                } else {
+                    // Update OG meta tags dynamically
+                    function setMeta(property, content) {
+                        let meta = document.querySelector(`meta[property="${property}"]`);
+                        if (meta) {
+                            meta.setAttribute('content', content);
+                        } else {
+                            meta = document.createElement('meta');
+                            meta.setAttribute('property', property);
+                            meta.setAttribute('content', content);
+                            document.head.appendChild(meta);
+                        }
+                    }
+
+                    setMeta('og:image', imageUrl);
+                    setMeta('og:url', redirectUrl);
+                    setMeta('og:title', 'Image Link');
+                    setMeta('og:description', 'Click to view image and visit link');
+
+                    // Update page title
+                    document.title = 'Image Link';
+
+                    showImage(imageUrl, redirectUrl);
+                }
+            } catch (e) {
+                showError('❌ Invalid Link', 'Link corrupt ho gaya hai ya sahi format mein nahi hai.');
+                console.error('Error parsing data:', e);
+            }
+        }
+    </script>
+</body>
+</html>
